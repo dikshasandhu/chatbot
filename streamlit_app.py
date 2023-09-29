@@ -10,11 +10,11 @@ from langchain.chains import RetrievalQA
 from dotenv import load_dotenv 
 import streamlit as st 
 from streamlit_chat import message
-
+import base64
 load_dotenv()
 
 os.environ['GOOGLE_API_KEY'] = str(os.getenv('AIzaSyDUnyNoM6LzupQRCYpeQg5aXdGumekVbsE'))
-os.environ['ACTIVELOOP_TOKEN'] = os.getenv('eyJhbGciOiJIUzUxMiIsImlhdCI6MTY5NTk0ODgyMiwiZXhwIjoxNzI3NTcxMjE1fQ.eyJpZCI6ImRpa3NoYXNhbmRodTEzMjAwMiJ9.ymCKty32iLmatS4n4wPNYI1EKmStu-7jaKmDhSilItdXCQmvmsFMGfyjnA4hkhSnqh77NthgjNnhshtolG7VLA')
+os.environ['ACTIVELOOP_TOKEN'] = base64.b64decode(os.getenv('eyJhbGciOiJIUzUxMiIsImlhdCI6MTY5NTk0ODgyMiwiZXhwIjoxNzI3NTcxMjE1fQ.eyJpZCI6ImRpa3NoYXNhbmRodTEzMjAwMiJ9.ymCKty32iLmatS4n4wPNYI1EKmStu-7jaKmDhSilItdXCQmvmsFMGfyjnA4hkhSnqh77NthgjNnhshtolG7VLA'))
 os.environ['dikshasandhu132002']= os.getenv('dikshasandhu132002')
 
 @st.cache_data
