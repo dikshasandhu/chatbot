@@ -2,6 +2,8 @@ import os
 from langchain.document_loaders import DirectoryLoader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.embeddings.openai import OpenAIEmbeddings
+from langchain.embeddings import GooglePalmEmbeddings
+from langchain.llms import GooglePalm
 from langchain.vectorstores import DeepLake
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
@@ -11,9 +13,9 @@ from streamlit_chat import message
 
 load_dotenv()
 
-os.environ['OPENAI_API_KEY'] = os.getenv('OPENAI_API_KEY')
-os.environ['ACTIVELOOP_TOKEN'] = os.getenv('ACTIVELOOP_TOKEN')
-os.environ['DEEPLAKE_ACCOUNT_NAME']= os.getenv('DEEPLAKE_ACCOUNT_NAME')
+os.environ['GOOGLE_API_KEY'] = os.getenv('AIzaSyDUnyNoM6LzupQRCYpeQg5aXdGumekVbsE')
+os.environ['ACTIVELOOP_TOKEN'] = os.getenv('eyJhbGciOiJIUzUxMiIsImlhdCI6MTY5NTk0ODgyMiwiZXhwIjoxNzI3NTcxMjE1fQ.eyJpZCI6ImRpa3NoYXNhbmRodTEzMjAwMiJ9.ymCKty32iLmatS4n4wPNYI1EKmStu-7jaKmDhSilItdXCQmvmsFMGfyjnA4hkhSnqh77NthgjNnhshtolG7VLA')
+os.environ['dikshasandhu132002']= os.getenv('dikshasandhu132002')
 
 @st.cache_data
 def doc_preprocessing():
@@ -32,7 +34,7 @@ def doc_preprocessing():
 
 @st.cache_resource
 def embeddings_store():
-    embeddings = OpenAIEmbeddings()
+    embeddings = GooglePalmEmbeddings()
     print(embeddings)
     texts = doc_preprocessing()
     db = DeepLake.from_documents(texts, embeddings, dataset_path=f"hub://aianytime07/text_embedding")
@@ -52,7 +54,7 @@ def search_db():
     retriever.search_kwargs['fetch_k'] = 100
     retriever.search_kwargs['maximal_marginal_relevance'] = True
     retriever.search_kwargs['k'] = 10
-    model = ChatOpenAI(model='gpt-3.5-turbo')
+    model = GooglePalm()
     qa = RetrievalQA.from_llm(model, retriever=retriever, return_source_documents=True)
     return qa
 
