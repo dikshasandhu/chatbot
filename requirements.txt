@@ -6,7 +6,6 @@ streamlit
 streamlit_chat
 python-dotenv
 bs4
-base64
 requests
 pypdf
 unstructured
