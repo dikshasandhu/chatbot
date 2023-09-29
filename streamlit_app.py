@@ -14,8 +14,8 @@ import base64
 load_dotenv()
 
 os.environ['GOOGLE_API_KEY'] = str(os.getenv('AIzaSyDUnyNoM6LzupQRCYpeQg5aXdGumekVbsE'))
-os.environ['ACTIVELOOP_TOKEN'] = base64.b64decode(os.getenv('eyJhbGciOiJIUzUxMiIsImlhdCI6MTY5NTk0ODgyMiwiZXhwIjoxNzI3NTcxMjE1fQ.eyJpZCI6ImRpa3NoYXNhbmRodTEzMjAwMiJ9.ymCKty32iLmatS4n4wPNYI1EKmStu-7jaKmDhSilItdXCQmvmsFMGfyjnA4hkhSnqh77NthgjNnhshtolG7VLA'))
-os.environ['dikshasandhu132002']= os.getenv('dikshasandhu132002')
+#os.environ['ACTIVELOOP_TOKEN'] = base64.b64decode(os.getenv('eyJhbGciOiJIUzUxMiIsImlhdCI6MTY5NTk0ODgyMiwiZXhwIjoxNzI3NTcxMjE1fQ.eyJpZCI6ImRpa3NoYXNhbmRodTEzMjAwMiJ9.ymCKty32iLmatS4n4wPNYI1EKmStu-7jaKmDhSilItdXCQmvmsFMGfyjnA4hkhSnqh77NthgjNnhshtolG7VLA'))
+#os.environ['dikshasandhu132002']= os.getenv('dikshasandhu132002')
 
 @st.cache_data
 def doc_preprocessing():
@@ -37,18 +37,26 @@ def embeddings_store():
     embeddings = GooglePalmEmbeddings()
     print(embeddings)
     texts = doc_preprocessing()
-    db = DeepLake.from_documents(texts, embeddings, dataset_path=f"hub://aianytime07/text_embedding")
-    print(db)
-    db = DeepLake(
-    dataset_path=f"hub://aianytime07/text_embedding",
-    read_only=True,
-    embedding_function=embeddings,
-    )
+    persist_directory = 'db'
+    db = Chroma.from_documents(documents=texts,
+                                 embedding=embedding,
+                                 persist_directory=persist_directory)
+    #db = DeepLake.from_documents(texts, embeddings, dataset_path=f"hub://aianytime07/text_embedding")
+  
+    #db = DeepLake(
+    #dataset_path=f"hub://aianytime07/text_embedding",
+    #read_only=True,
+    #embedding_function=embeddings,
+    #)
     return db
 
 @st.cache_resource
 def search_db():
     db = embeddings_store()
+    db.persist()
+    db = None
+    db = Chroma(persist_directory=persist_directory,
+                  embedding_function=embedding))
     retriever = db.as_retriever()
     retriever.search_kwargs['distance_metric'] = 'cos'
     retriever.search_kwargs['fetch_k'] = 100
