@@ -10,7 +10,7 @@ from langchain.chains import RetrievalQA
 from dotenv import load_dotenv 
 import streamlit as st 
 from streamlit_chat import message
-import base64
+
 load_dotenv()
 
 os.environ['GOOGLE_API_KEY'] = str(os.getenv('AIzaSyDUnyNoM6LzupQRCYpeQg5aXdGumekVbsE'))
