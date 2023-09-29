@@ -34,13 +34,17 @@ def doc_preprocessing():
 
 @st.cache_resource
 def embeddings_store():
-    embeddings = GooglePalmEmbeddings()
-    print(embeddings)
+    embedding = GooglePalmEmbeddings()
     texts = doc_preprocessing()
     persist_directory = 'db'
-    db = Chroma.from_documents(documents=texts,
+    vectordb = Chroma.from_documents(documents=texts,
                                  embedding=embedding,
                                  persist_directory=persist_directory)
+    vectordb.persist()
+    vectordb = None
+    vectordb = Chroma(persist_directory=persist_directory,
+                  embedding_function=embedding)
+    retriever = vectordb.as_retriever()
     #db = DeepLake.from_documents(texts, embeddings, dataset_path=f"hub://aianytime07/text_embedding")
   
     #db = DeepLake(
@@ -48,16 +52,11 @@ def embeddings_store():
     #read_only=True,
     #embedding_function=embeddings,
     #)
-    return db
+    return retriever
 
 @st.cache_resource
 def search_db():
-    db = embeddings_store()
-    db.persist()
-    db = None
-    db = Chroma(persist_directory=persist_directory,
-                  embedding_function=embedding))
-    retriever = db.as_retriever()
+    retriever = embeddings_store()
     retriever.search_kwargs['distance_metric'] = 'cos'
     retriever.search_kwargs['fetch_k'] = 100
     retriever.search_kwargs['maximal_marginal_relevance'] = True
